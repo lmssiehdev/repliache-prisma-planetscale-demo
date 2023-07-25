@@ -1,0 +1,32 @@
+export const getLastMutationId = async ({
+  replicacheClientId,
+  tx,
+}: {
+  replicacheClientId: string;
+  tx: any;
+}) => {
+  let lastMutationId;
+
+  const prismaReplicacheFindUnique = await tx.replicacheClient.findUnique({
+    where: { replicacheClientId },
+    select: { lastMutationId: true },
+  });
+
+  if (prismaReplicacheFindUnique)
+    lastMutationId = prismaReplicacheFindUnique.lastMutationId;
+  else {
+    await tx.replicacheClient.create({
+      data: {
+        // --- PUBLIC ID ---
+        replicacheClientId,
+        // --- FIELDS ---
+        lastMutationId: 0,
+      },
+      select: { lastMutationId: true },
+    });
+
+    lastMutationId = 0;
+  }
+
+  return { data: lastMutationId };
+};
