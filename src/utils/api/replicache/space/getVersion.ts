@@ -1,9 +1,11 @@
+import { PrismaTx } from "@/types";
+
 export const getVersion = async ({
   tx,
   spaceId,
   userId,
 }: {
-  tx: any;
+  tx: PrismaTx;
   spaceId: string;
   userId: string;
 }) => {

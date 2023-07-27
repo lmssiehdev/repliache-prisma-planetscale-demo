@@ -1,3 +1,5 @@
+import { PrismaTx } from "@/types";
+
 export const updateLastMutationId = async ({
   replicacheClientId,
   nextMutationId,
@@ -5,7 +7,7 @@ export const updateLastMutationId = async ({
 }: {
   replicacheClientId: string;
   nextMutationId: number;
-  tx: any;
+  tx: PrismaTx;
 }) => {
   console.log(
     "Setting",

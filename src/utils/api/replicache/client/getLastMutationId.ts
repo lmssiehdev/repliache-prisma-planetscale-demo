@@ -1,9 +1,11 @@
+import { PrismaTx } from "@/types";
+
 export const getLastMutationId = async ({
   replicacheClientId,
   tx,
 }: {
   replicacheClientId: string;
-  tx: any;
+  tx: PrismaTx;
 }) => {
   let lastMutationId;
 

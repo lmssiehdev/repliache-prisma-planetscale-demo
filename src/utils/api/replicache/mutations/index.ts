@@ -1,3 +1,4 @@
+import { PrismaTx } from "@/types";
 import { createMutations } from "./create";
 import { deleteMutations } from "./delete";
 import { updateMutations } from "./update";
@@ -5,7 +6,7 @@ import { updateMutations } from "./update";
 export type MutationArgs = {
   args: Record<string, any>;
   spaceId: string;
-  tx: any;
+  tx: PrismaTx;
   versionNext: number;
 };
 

@@ -1,3 +1,5 @@
+import { PrismaTx } from "@/types";
+
 export const getTodos = async ({
   spaceId,
   tx,
@@ -7,7 +9,7 @@ export const getTodos = async ({
   spaceId: string;
   userId: string;
   versionAt: string;
-  tx: any;
+  tx: PrismaTx;
 }) => {
   // Important: we need to make sure that the `spaceId` provided in the query is also owned by user
   const prismaTodoFindMany = await tx.todo.findMany({

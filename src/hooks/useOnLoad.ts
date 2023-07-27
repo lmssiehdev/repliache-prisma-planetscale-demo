@@ -11,6 +11,6 @@ export const useOnLoad = ({
   useEffect(() => {
     setSpaceId(window.localStorage.getItem("spaceId1"));
 
-    setUserId(getCookie("userId"));
+    setUserId(getCookie("userId") as string);
   }, []);
 };

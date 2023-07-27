@@ -1,17 +1,17 @@
-import { Prisma } from "@prisma/client";
+import { db } from "@/lib/db";
 import { getLastMutationId } from "@/utils/api/replicache/client/getLastMutationId";
 import { getTodos } from "@/utils/api/replicache/entries/getTodos";
 import { getVersion } from "@/utils/api/replicache/space/getVersion";
-import { userId as USER_ID } from "@/utils/constants";
 import { getErrorMessage } from "@/utils/misc";
+import { Prisma } from "@prisma/client";
+import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
-import { db } from "@/lib/db";
 
-export async function POST(req: NextRequest) {
+export async function POST(req: NextRequest, res: NextResponse) {
   console.log("\nPull: ***", req.body, "***\n");
 
-  const { data: userId, error: userErr } = { data: USER_ID, error: null }; // await utilAuth(req, res);
-  if (!userId || userErr)
+  const userId = cookies().get("userId")?.value;
+  if (!userId)
     return NextResponse.json({ error: "user_not_found" }, { status: 401 });
 
   // Provided by Replicache
@@ -20,6 +20,8 @@ export async function POST(req: NextRequest) {
   const { searchParams } = new URL(req.url);
   // Provided by client
   const spaceId = searchParams.get("spaceId");
+
+  console.log(spaceId);
 
   if (!clientID || !spaceId || cookie === undefined)
     return NextResponse.json({ error: "insufficient_args" }, { status: 403 });

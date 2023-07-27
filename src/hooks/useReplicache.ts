@@ -1,6 +1,6 @@
-import { spaceId } from "./../utils/constants";
-import { Args } from "@prisma/client/runtime/library";
-import { useEffect, useState } from "react";
+import { resetAccount } from "@/utils/resetAccount";
+import { useRouter } from "next/navigation";
+import { type Dispatch, type SetStateAction, useEffect, useState } from "react";
 import { Replicache, type WriteTransaction } from "replicache";
 
 type MutatorArgs = Record<string, any>;
@@ -68,10 +68,16 @@ const updateHabitMutation = async ({ tx, args, spaceId }: MutatorsParams) => {
 export const useReplicache = ({
   spaceId,
   userId,
+  setSpaceId,
+  setUserId,
 }: {
-  spaceId: string;
-  userId: string;
+  spaceId: string | null;
+  userId: string | null;
+  setSpaceId: Dispatch<SetStateAction<string | null>>;
+  setUserId: Dispatch<SetStateAction<string | null>>;
 }) => {
+  const router = useRouter();
+
   const mutators = {
     create: (tx: WriteTransaction, args: MutatorArgs) =>
       createHabitMutation({ tx, args, spaceId }),
@@ -88,13 +94,23 @@ export const useReplicache = ({
   useEffect(() => {
     if (userId && spaceId) {
       const r = new Replicache({
-        schemaVersion: "0",
         name: `${userId}/${spaceId}`,
         licenseKey: process.env.NEXT_PUBLIC_REPLICACHE!,
         pushURL: `/api/replicache/push?spaceId=${spaceId}`,
         pullURL: `/api/replicache/pull?spaceId=${spaceId}`,
         mutators,
+        // added some delay to prevent spamming the DB in case of an error
+        // you should delete this if you want to sync as soon as possible
       });
+
+      // This gets called when the push/pull API returns a `401`.
+      r.getAuth = () => {
+        // resetAccount({ setSpaceId, setUserId });
+
+        // router.push("/login");
+
+        return undefined;
+      };
 
       setRep(r);
 
