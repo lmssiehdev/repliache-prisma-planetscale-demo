@@ -58,6 +58,9 @@ dependencies:
   react-tailwind-variants:
     specifier: ^1.0.2
     version: 1.0.2(@types/react@18.2.7)(react@18.2.0)(tailwind-merge@1.14.0)
+  replicache:
+    specifier: ^12.2.2
+    version: 12.2.2
   replicache-react:
     specifier: ^2.11.0
     version: 2.11.0(react-dom@18.2.0)(react@18.2.0)
@@ -4708,6 +4711,12 @@ packages:
     dependencies:
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
+    dev: false
+
+  /replicache@12.2.2:
+    resolution: {integrity: sha512-vdbRUEMJKpgdyxiqZPSa2fDRx/WYSwOTfiCKzsyPyw2JO8vaBDHl2AV6lvr7yVVdl8TzTQOknn4fbc22NG7q8g==}
+    engines: {node: '>=14.8.0'}
+    hasBin: true
     dev: false
 
   /require-from-string@2.0.2:
