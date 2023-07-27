@@ -40,9 +40,19 @@ export default function Home() {
   if (!spaceId || !userId)
     return (
       <>
-        <Link href="/auth/login">login</Link>
-        or
-        <Link href="/auth/signup">sign up</Link>
+        <Link
+          className="text-blue-500 underline underline-offset-4 my-4 inline-block"
+          href="/auth/login"
+        >
+          login
+        </Link>
+        <span className="block">or</span>
+        <Link
+          className="text-blue-500 underline underline-offset-4 my-4 inline-block"
+          href="/auth/signup"
+        >
+          sign up
+        </Link>
       </>
     );
 
