@@ -1,7 +1,10 @@
-import { resetAccount } from "@/utils/resetAccount";
 import { useRouter } from "next/navigation";
-import { type Dispatch, type SetStateAction, useEffect, useState } from "react";
-import { Replicache, type WriteTransaction } from "replicache";
+import { useEffect, useState } from "react";
+import {
+  type ReadonlyJSONValue,
+  Replicache,
+  type WriteTransaction,
+} from "replicache";
 
 type MutatorArgs = Record<string, any>;
 
@@ -65,34 +68,41 @@ const updateHabitMutation = async ({ tx, args, spaceId }: MutatorsParams) => {
   return await tx.put(key, { ...prev, ...args });
 };
 
+// * find a way to infer the types directly without TS crying
+type Mutators = {
+  create: (tx: WriteTransaction, args: MutatorArgs) => Promise<void>;
+  delete: (tx: WriteTransaction, args: MutatorArgs) => Promise<boolean>;
+  get: (
+    tx: WriteTransaction,
+    args: MutatorArgs
+  ) => Promise<ReadonlyJSONValue[]>;
+  update: (tx: WriteTransaction, args: MutatorArgs) => Promise<void>;
+};
+
 export const useReplicache = ({
   spaceId,
   userId,
-  setSpaceId,
-  setUserId,
 }: {
   spaceId: string | null;
   userId: string | null;
-  setSpaceId: Dispatch<SetStateAction<string | null>>;
-  setUserId: Dispatch<SetStateAction<string | null>>;
 }) => {
   const router = useRouter();
 
-  const mutators = {
-    create: (tx: WriteTransaction, args: MutatorArgs) =>
-      createHabitMutation({ tx, args, spaceId }),
-    delete: (tx: WriteTransaction, args: MutatorArgs) =>
-      deleteHabitMutation({ tx, args, spaceId }),
-    get: (tx: WriteTransaction, args: MutatorArgs) =>
-      getHabitsMutation({ tx, args, spaceId }),
-    update: (tx: WriteTransaction, args: MutatorArgs) =>
-      updateHabitMutation({ tx, args, spaceId }),
-  };
-
-  const [rep, setRep] = useState<Replicache<typeof mutators> | null>(null);
+  const [rep, setRep] = useState<Replicache<Mutators> | null>(null);
 
   useEffect(() => {
     if (userId && spaceId) {
+      const mutators = {
+        create: (tx: WriteTransaction, args: MutatorArgs) =>
+          createHabitMutation({ tx, args, spaceId }),
+        delete: (tx: WriteTransaction, args: MutatorArgs) =>
+          deleteHabitMutation({ tx, args, spaceId }),
+        get: (tx: WriteTransaction, args: MutatorArgs) =>
+          getHabitsMutation({ tx, args, spaceId }),
+        update: (tx: WriteTransaction, args: MutatorArgs) =>
+          updateHabitMutation({ tx, args, spaceId }),
+      };
+
       const r = new Replicache({
         name: `${userId}/${spaceId}`,
         licenseKey: process.env.NEXT_PUBLIC_REPLICACHE!,

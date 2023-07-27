@@ -12,6 +12,5 @@ export const resetAccount = ({
   setUserId(null);
 
   window.localStorage.removeItem("spaceId1");
-  window.localStorage.removeItem("spaceId2");
   setSpaceId(null);
 };

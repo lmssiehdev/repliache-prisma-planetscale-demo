@@ -7,7 +7,9 @@ import { useOnLoad } from "@/hooks/useOnLoad";
 import { usePokeListener } from "@/hooks/usePokeListener";
 import { useReplicache } from "@/hooks/useReplicache";
 import { generateId } from "@/utils/generateId";
+import { resetAccount } from "@/utils/resetAccount";
 import { getCookie } from "cookies-next";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { type ReadTransaction } from "replicache";
@@ -23,38 +25,41 @@ type Habit = {
 export default function Home() {
   const router = useRouter();
 
-  const [userId, setUserId] = useState<string | null>("");
-  const [spaceId, setSpaceId] = useState<string | null>("");
+  const [userId, setUserId] = useState<string | null>(null);
+  const [spaceId, setSpaceId] = useState<string | null>(null);
 
   useOnLoad({ setSpaceId, setUserId });
 
   const { data: rep } = useReplicache({
     userId,
     spaceId,
-    setSpaceId,
-    setUserId,
   });
 
   usePokeListener({ rep });
 
   if (!spaceId || !userId)
     return (
-      <div>
-        <button
-          onClick={() => {
-            router.push("/login");
-          }}
-        >
-          Log in
-        </button>
-      </div>
+      <>
+        <Link href="/auth/login">login</Link>
+        or
+        <Link href="/auth/signup">sign up</Link>
+      </>
     );
 
   return (
     <div>
       <div className="my-4 flex justify-between items-center">
         <h2 className=" text-lg">{`Welcome ${userId}`}</h2>
-        <Button color="red" size="sm">
+        <Button
+          color="red"
+          size="sm"
+          onClick={() =>
+            resetAccount({
+              setSpaceId,
+              setUserId,
+            })
+          }
+        >
           Logout
         </Button>
       </div>
@@ -147,7 +152,7 @@ function AddTodoInput({ addTodo }: { addTodo: (name: string) => void }) {
         type="submit"
         className="whitespace-nowrap block w-fit"
       >
-        Add Todo
+        Add Habit
       </Button>
     </form>
   );

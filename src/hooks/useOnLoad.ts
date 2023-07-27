@@ -9,7 +9,7 @@ export const useOnLoad = ({
   setUserId: Dispatch<SetStateAction<string | null>>;
 }) => {
   useEffect(() => {
-    setSpaceId(window.localStorage.getItem("spaceId1"));
+    setSpaceId(window.localStorage.getItem("spaceId1") as string);
 
     setUserId(getCookie("userId") as string);
   }, []);
