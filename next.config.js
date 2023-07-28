@@ -1,4 +1,4 @@
-const withPWA = require("@imbios/next-pwa")({
+const withPWA = require("@ducanh2912/next-pwa").default({
   dest: "public",
 });
 
@@ -9,5 +9,4 @@ const nextConfig = {
   },
 };
 
-// module.exports = withPWA(nextConfig);
-module.exports = nextConfig;
+module.exports = withPWA(nextConfig);
